@@ -15,7 +15,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>edu.farlon.kafka.producer.BasicProducer</mainClass>
+                    <mainClass>edu.farlon.kafka.producer.SimpleProducer</mainClass>
                 </configuration>
             </plugin>
         </plugins>
