@@ -26,7 +26,21 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>${kafka.version}</version>
+            <exclusions>
+                <!-- Explicitly exclude the vulnerable transitive dependency -->
+                <exclusion>
+                    <groupId>org.lz4</groupId>
+                    <artifactId>lz4-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- Fixed version for CVE-2025-66566 (overrides transitive dependency from kafka-clients) -->
+        <dependency>
+            <groupId>at.yawk.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>1.10.4</version>
+        </dependency>
+
         <!-- The SLF4J Facade (API) -->
         <dependency>
             <groupId>org.slf4j</groupId>
