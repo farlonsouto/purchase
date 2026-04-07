@@ -1,6 +1,6 @@
 # Kafka with Java Research Sandbox
 
-A modular Java 17 framework designed for high-performance data streaming and Machine Learning research. This project
+A modular Java framework designed for high-performance data streaming and Machine Learning research. This project
 implements a clean, fluent dialect for Kafka operations, focusing on experiment reproducibility and stream replay.
 
 ## 🚀 Architecture
