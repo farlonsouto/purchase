@@ -1,71 +1,226 @@
-# Kafka with Java Research Sandbox
+# 🛒 Purchasing Microservices Platform (Training Project)
 
-A modular Java framework designed for high-performance data streaming and Machine Learning research. This project
-implements a clean, fluent dialect for Kafka operations, focusing on experiment reproducibility and stream replay.
+## 📖 Overview
 
-## 🚀 Architecture
+This repository contains a **training project** designed to explore modern backend architecture using **Java + Spring Boot** in a **microservices-based system**.
 
-The project is structured as a Maven Multi-Module system:
+The application simulates a **purchase workflow**, covering the lifecycle of an order — from creation to inventory validation, payment processing, and notification.
 
-    producer: Handles data ingestion into Kafka topics.
-    consumer: A robust, signal-aware consumer with graceful shutdown logic.
-    core/framework: (In Development) A fluent DSL to replace boilerplate Kafka code with readable logic like Consume.from(topic).into(list).
+The goal is not to build a production-ready system, but to **learn, experiment, and understand** how distributed systems behave in practice, especially when integrating **event-driven communication** and **AWS cloud services**.
 
-## 🛠 Tech Stack
+---
 
-    Java 17 (LTS)
-    Apache Kafka 3.9.1
-    Maven (Dependency Management)
-    SLF4J (Structured Logging)
-    Docker & Docker Compose (Infrastructure)
+## 🎯 Objectives
 
-## 📦 Security & Performance
+* Practice **microservices architecture**
+* Implement **event-driven communication** using RabbitMQ
+* Explore **AWS services** in a realistic scenario
+* Understand **data consistency challenges** across services
+* Gain hands-on experience with **Docker and Kubernetes (EKS)**
 
-    CVE-2025-66566 Fix: The project explicitly excludes vulnerable lz4-java versions and utilizes the patched community fork at.yawk.lz4:1.10.4.
-    Resource Management: Implements try-with-resources and AtomicBoolean flags to ensure zero memory leaks and clean partition rebalancing during shutdowns.
+---
 
-### 🚦 Getting Started
+## 🧱 Architecture
 
-1. Start Infrastructure
-   Ensure you have Docker installed. This command starts Zookeeper and Kafka in the background.
+The system is composed of multiple loosely coupled microservices communicating asynchronously via a message broker.
 
-```bash
-docker-compose up -d
+### Services
+
+* **Order Service**
+
+  * Handles order creation
+  * Publishes `OrderCreated` events
+
+* **Inventory Service**
+
+  * Reserves stock
+  * Consumes `OrderCreated`
+  * Publishes `InventoryReserved` or `InventoryFailed`
+
+* **Payment Service**
+
+  * Processes payments
+  * Consumes `InventoryReserved`
+  * Publishes `PaymentApproved` or `PaymentFailed`
+
+* **Notification Service**
+
+  * Sends notifications (or logs)
+  * Consumes final events
+
+* **Audit Service**
+
+  * Stores domain events for traceability (DynamoDB)
+
+---
+
+## 🔁 Event Flow
+
+```text
+Client
+  ↓
+Order Service
+  ↓ (OrderCreated)
+RabbitMQ
+  ↓
+Inventory Service
+  ↓ (InventoryReserved)
+RabbitMQ
+  ↓
+Payment Service
+  ↓ (PaymentApproved)
+RabbitMQ
+  ↓
+Notification Service
 ```
 
-2. Build the Project
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+
+* Java 17+
+* Spring Boot
+* Spring Web
+* Spring Data
+* Spring AMQP (RabbitMQ)
+
+### Messaging
+
+* RabbitMQ
+
+### Databases
+
+* PostgreSQL (Amazon RDS in cloud)
+* DynamoDB (event storage)
+
+### Cloud (AWS)
+
+* EC2 (initial hosting)
+* EKS (Kubernetes orchestration)
+* Lambda (event-driven processing)
+* IAM (authentication & authorization)
+
+### DevOps & Tooling
+
+* Docker & Docker Compose
+* Kubernetes (EKS)
+* Git
+
+---
+
+## 🐳 Local Development
+
+The project is fully runnable locally using Docker.
+
+### Requirements
+
+* Docker
+* Docker Compose
+* Java 17+
+
+### Run the environment
 
 ```bash
-mvn clean install
+docker-compose up --build
 ```
 
-3. Run the Consumer
-   In a dedicated terminal, start the listener:
+This will start:
 
-```bash
-mvn exec:java -pl consumer -Dexec.mainClass="org.farlon.kafka.consumer.consumer.SimpleConsumer"
+* RabbitMQ
+* PostgreSQL
+* DynamoDB (local)
+* All microservices
+
+---
+
+## ☁️ Cloud Evolution Strategy
+
+This project is designed to evolve in stages:
+
+1. **Local Environment**
+
+   * Full system running via Docker Compose
+
+2. **EC2 Deployment**
+
+   * Simple cloud hosting with Docker
+
+3. **Managed Databases**
+
+   * Migration to Amazon RDS and DynamoDB
+
+4. **Kubernetes (EKS)**
+
+   * Container orchestration and scaling
+
+5. **Serverless Integration**
+
+   * AWS Lambda for event-driven extensions
+
+---
+
+## 🔐 Security
+
+* AWS IAM roles and policies are used for:
+
+  * Service permissions
+  * Resource access control
+* No sensitive credentials should be committed
+
+---
+
+## 📂 Project Structure
+
+```text
+/services
+  /order-service
+  /inventory-service
+  /payment-service
+  /notification-service
+  /audit-service
+
+/docker-compose.yml
+/k8s
+/README.md
 ```
 
-4. Run the Producer
-   In another terminal, send a test message:
+---
 
-```bash
-mvn exec:java -pl producer -Dexec.mainClass="edu.farlon.kafka.producer.SimpleProducer"
-```
+## ⚠️ Disclaimer
 
-markdown
+This is a **learning-focused project**.
 
-### 🧪 Research Features: Time-Travel & Replay
+It intentionally prioritizes:
 
-This framework goal is to supports Stream Replay. By leveraging Kafka's offset-to-timestamp mapping, researchers can
-rewind the consumer to any specific point in time to re-evaluate ML models against historical data.
-java
+* clarity over completeness
+* experimentation over best practices in some areas
 
-// Example of the desired Framework Dialect
-Consume.from("research-data")
-.since(yesterdayTimestamp)
-.into(myResearchList);
+Do not use this as-is in production.
 
-### 📝 License
+---
 
-MIT - Created for research and educational purposes.
+## 🚀 Future Improvements
+
+* Implement **Saga Pattern** for distributed transactions
+* Add **API Gateway**
+* Introduce **observability** (tracing, metrics)
+* Improve **error handling and retries**
+* Add **CI/CD pipeline**
+
+---
+
+## 🤝 Contributions
+
+This is a personal training project, but feel free to fork, explore, and adapt it for your own learning.
+
+---
+
+## 📌 Final Notes
+
+This project is meant to simulate real-world backend challenges in a controlled environment.
+Expect rough edges — that’s part of the learning process.
+
+---
+
