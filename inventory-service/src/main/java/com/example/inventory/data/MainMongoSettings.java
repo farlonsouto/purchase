@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
  * Modern best practice: Using a Record with ConfigurationProperties. Prefix 'mongodb' matches the
  * application.properties content (e.g., mongodb.main.uri).
  */
-@Component
 @ConfigurationProperties(prefix = "mongodb.main")
 @Primary // Marks this as the primary settings bean because multiple DatabaseSettings are present
 public record MainMongoSettings(String uri, String database) implements DatabaseSettings {
