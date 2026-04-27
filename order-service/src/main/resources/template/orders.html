@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Orders</title>
+</head>
+<body>
+<h1>Orders</h1>
+
+<form method="post" action="/orders">
+    <input type="text" name="product" placeholder="Product"/>
+    <button type="submit">Create Order</button>
+</form>
+
+<ul>
+    <li th:each="order : ${orders}">
+        <span th:text="${order}"></span>
+    </li>
+</ul>
+
+</body>
+</html>
