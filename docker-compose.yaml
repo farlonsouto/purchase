@@ -7,6 +7,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: purchase
 
   postgres:
     image: postgres:15
