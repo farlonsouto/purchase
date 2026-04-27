@@ -12,7 +12,7 @@ The goal is not to build a production-ready system, but to **learn, experiment, 
 
 ## 🎯 Objectives
 
-* Practice **microservices architecture**
+* Practice **microservices architecture with Spring **
 * Implement **event-driven communication** using RabbitMQ
 * Explore **AWS services** in a realistic scenario
 * Understand **data consistency challenges** across services
@@ -80,7 +80,7 @@ Notification Service
 
 ### Backend
 
-* Java 17+
+* Java 21+
 * Spring Boot
 * Spring Web
 * Spring Data
@@ -93,7 +93,8 @@ Notification Service
 ### Databases
 
 * PostgreSQL (Amazon RDS in cloud)
-* DynamoDB (event storage)
+* DynamoDB (event storage, native DAX when in cloud)
+* MongoDB (optional for notifications)
 
 ### Cloud (AWS)
 
@@ -118,11 +119,12 @@ The project is fully runnable locally using Docker.
 
 * Docker
 * Docker Compose
-* Java 17+
+* Java 21+
 
 ### Run the environment
 
 ```bash
+mvn clean install -DskipTests
 docker-compose up --build
 ```
 
@@ -195,7 +197,9 @@ This is a **learning-focused project**.
 It intentionally prioritizes:
 
 * clarity over completeness
-* experimentation over best practices in some areas
+* best practices over performance
+* simplicity over robustness
+* incremental, consistent learning over production-readiness
 
 Do not use this as-is in production.
 
