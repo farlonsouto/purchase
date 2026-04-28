@@ -19,18 +19,52 @@ public class SecurityConfig {
   }
 
   @Bean
+  /**
+   * For convenience, this method defines an in-memory user store with a single user having the
+   * username "user" and the password "password". The password is encoded using the provided {@link
+   * PasswordEncoder} bean. The user is assigned the role "USER".
+   */
   public UserDetailsService users(PasswordEncoder encoder) {
+    // TODO to be removed ASAP
     UserDetails user =
         User.withUsername("user").password(encoder.encode("password")).roles("USER").build();
 
     return new InMemoryUserDetailsManager(user);
   }
 
-  @Bean
+  /**
+   * /** * Configures the application's HTTP security rules. * *
+   *
+   * <p>This filter chain applies the following behavior: * *
+   *
+   * <ul>
+   *   *
+   *   <li>Allows unauthenticated access to static CSS resources under {@code /css/**} * and to the
+   *       login page at {@code /login}. *
+   *   <li>Restricts access to order-view pages under {@code /view/orders/**} * to users with the
+   *       {@code USER} role. *
+   *   <li>Requires authentication for every other request. *
+   *   <li>Enables form-based login and redirects successfully authenticated users * to {@code
+   *       /view/orders}. *
+   *   <li>Configures logout to redirect users back to the login page. *
+   * </ul>
+   *
+   * @param http the {@link HttpSecurity} builder used to define web-based security * @return the
+   *     configured {@link SecurityFilterChain} instance * @t hrows Exception if the security
+   *     configuration cannot be built
+   */
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            auth -> auth.requestMatchers("/css/**").permitAll().anyRequest().authenticated())
-        .formLogin(form -> form.defaultSuccessUrl("/orders", true))
+            auth ->
+                auth.requestMatchers("/css/**", "/login")
+                    .permitAll()
+                    .requestMatchers("/view/orders/**")
+                    .hasRole("USER")
+                    .anyRequest()
+                    .authenticated())
+        .formLogin(
+            form -> form.defaultSuccessUrl("/view/orders", true) // ✅ FIXED
+            )
         .logout(logout -> logout.logoutSuccessUrl("/login"));
 
     return http.build();
