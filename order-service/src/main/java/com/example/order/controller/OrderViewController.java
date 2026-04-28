@@ -40,6 +40,11 @@ public class OrderViewController {
     this.rabbitTemplate = rabbitTemplate;
   }
 
+  @GetMapping("/")
+  public String home() {
+    return "redirect:/view/orders";
+  }
+
   /**
    * Handles the submission of a new order from a web form.
    *
@@ -60,12 +65,12 @@ public class OrderViewController {
    *
    * @param model A container for data that needs to be accessible by the View layer.
    * @return The logical name of the template (e.g., maps to
-   *     src/main/resources/templates/orders.html).
+   *     src/main/resources/templates/login.html).
    */
   @GetMapping
   public String getOrders(Model model) {
     // Exposes the current state of the orders list to the UI rendering engine.
     model.addAttribute("orders", orders);
-    return "orders";
+    return "redirect:/view/orders";
   }
 }

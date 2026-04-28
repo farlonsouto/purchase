@@ -4,14 +4,35 @@
     <title>Orders</title>
 </head>
 <body>
+
 <h1>Orders</h1>
 
-<form method="post" action="/view/orders">
-    <input type="text" name="product" placeholder="Product"/>
+<!-- Logout -->
+<form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <button type="submit">Logout</button>
+</form>
+
+<hr/>
+
+<!-- Create Order -->
+<h2>Create Order</h2>
+
+<form th:action="@{/view/orders}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <input type="text" name="product" placeholder="Product name" required/>
     <button type="submit">Create Order</button>
 </form>
 
+<hr/>
+
+<!-- Orders List -->
+<h2>Order List</h2>
+
 <ul>
+    <li th:if="${#lists.isEmpty(orders)}">No orders yet</li>
+
     <li th:each="order : ${orders}">
         <span th:text="${order}"></span>
     </li>

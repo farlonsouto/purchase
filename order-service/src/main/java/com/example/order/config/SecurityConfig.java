@@ -12,18 +12,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-  @Bean
   // Better to explicitly encode and avoid the {noop} workaround
+  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
   /**
    * For convenience, this method defines an in-memory user store with a single user having the
    * username "user" and the password "password". The password is encoded using the provided {@link
    * PasswordEncoder} bean. The user is assigned the role "USER".
    */
+  @Bean
   public UserDetailsService users(PasswordEncoder encoder) {
     // TODO to be removed ASAP
     UserDetails user =
@@ -53,6 +53,7 @@ public class SecurityConfig {
    *     configured {@link SecurityFilterChain} instance * @t hrows Exception if the security
    *     configuration cannot be built
    */
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             auth ->
@@ -63,8 +64,9 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
         .formLogin(
-            form -> form.defaultSuccessUrl("/view/orders", true) // ✅ FIXED
-            )
+            form ->
+                form.loginPage("/login") // optional but clearer
+                    .defaultSuccessUrl("/view/orders", false)) // relative redirects
         .logout(logout -> logout.logoutSuccessUrl("/login"));
 
     return http.build();
