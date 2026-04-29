@@ -53,7 +53,7 @@ public class OrderViewController {
    *     pattern, which prevents duplicate form submissions if the user refreshes their browser.
    */
   @PostMapping
-  public String createOrder(@RequestParam String product) {
+  public String createOrder(@RequestParam("product") String product) {
     orders.add(product); // temporary UI feedback
     rabbitTemplate.convertAndSend("order.exchange", "order.created", product);
     return "redirect:/view/orders";
