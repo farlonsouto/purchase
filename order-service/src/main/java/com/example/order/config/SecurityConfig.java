@@ -63,10 +63,7 @@ public class SecurityConfig {
                     .hasRole("USER")
                     .anyRequest()
                     .authenticated())
-        .formLogin(
-            form ->
-                form.loginPage("/login") // optional but clearer
-                    .defaultSuccessUrl("/view/orders", false)) // relative redirects
+        .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/view/orders"))
         .logout(logout -> logout.logoutSuccessUrl("/login"));
 
     return http.build();

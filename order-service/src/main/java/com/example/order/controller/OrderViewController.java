@@ -54,8 +54,7 @@ public class OrderViewController {
    */
   @PostMapping
   public String createOrder(@RequestParam String product) {
-    // Dispatches the message to the broker. The exchange routes it based on the routing key.
-    // Logic note: The product is sent to the queue but NOT added to the local 'orders' list here.
+    orders.add(product); // temporary UI feedback
     rabbitTemplate.convertAndSend("order.exchange", "order.created", product);
     return "redirect:/view/orders";
   }
@@ -71,6 +70,6 @@ public class OrderViewController {
   public String getOrders(Model model) {
     // Exposes the current state of the orders list to the UI rendering engine.
     model.addAttribute("orders", orders);
-    return "redirect:/view/orders";
+    return "orders";
   }
 }
